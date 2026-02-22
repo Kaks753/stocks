@@ -309,8 +309,4 @@ This project is for educational purposes. Use responsibly.
 ![Code Size](https://img.shields.io/github/languages/code-size/Kaks753/stocks)
 ![Last Commit](https://img.shields.io/github/last-commit/Kaks753/stocks)
 
----
 
-**⭐ Star this repo if you found it helpful!**
-
-**📧 Questions? Open an issue or check the documentation!**
