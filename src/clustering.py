@@ -56,22 +56,27 @@ class StockClusterer:
         Train clustering model and assign risk profiles.
         Returns DataFrame with Cluster and Risk_Profile columns.
         """
-        # IMPROVED FEATURE SELECTION
-        # Focus on features that truly separate risk levels
+        # BALANCED FEATURE SELECTION - 15 features for good separation
         feature_cols = [
-            # Core risk measures (most important)
-            'std_return', 'volatility_mean', 'max_drawdown',
+            # Core volatility (most important)
+            'std_return', 'volatility_mean', 'volatility_max',
             
-            # Risk-adjusted performance
-            'sharpe_ratio', 'return_consistency',
+            # Downside risk (critical)
+            'max_drawdown', 'downside_deviation', 'var_95',
             
-            # Additional risk metrics
-            'downside_deviation', 'var_95', 'return_skew',
+            # Risk-adjusted return
+            'sharpe_ratio',
             
-            # Technical/momentum (secondary)
-            'rsi_mean', 'momentum_30d',
+            # Distribution shape
+            'return_skew', 'return_kurtosis',
             
-            # Liquidity/trading
+            # Technical indicators
+            'rsi_mean', 'bb_width_mean',
+            
+            # Momentum
+            'momentum_30d', 'momentum_90d',
+            
+            # Liquidity risk
             'trading_frequency', 'amihud_illiquidity'
         ]
         
