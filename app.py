@@ -20,7 +20,6 @@ This dashboard helps investors classify Nairobi Stock Exchange stocks into **ris
 using machine learning.
 """)
 
-
 # COLOR SCHEME 
 
 RISK_COLORS = {
