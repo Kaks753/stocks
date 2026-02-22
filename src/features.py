@@ -1,20 +1,18 @@
-"""
-Feature Engineering for NSE Stock Clustering
-Simple and clean - each function adds columns, that's it!
-"""
+# Feature Engineering for NSE Stock Clustering
+
 import numpy as np
 import pandas as pd
 
 
 def calculate_returns(group):
-    """Step 1: Calculate daily returns"""
+    """ Daily returns"""
     group = group.sort_values('Date').copy()
     group['daily_return'] = group['Day Price'].pct_change()
     return group
 
 
 def calculate_volatility_features(group, windows=[7, 14, 30]): 
-    """Step 2: Calculate rolling volatility"""
+    """ Calculate rolling volatility"""
     group = group.sort_values('Date').copy()
     
     for window in windows:
@@ -26,7 +24,7 @@ def calculate_volatility_features(group, windows=[7, 14, 30]):
 
 
 def calculate_risk_metrics(group):
-    """Step 3: Advanced risk metrics"""
+    """ Risk metrics"""
     group = group.sort_values('Date').copy()
     
     # Downside deviation (only negative returns)
@@ -41,7 +39,7 @@ def calculate_risk_metrics(group):
 
 
 def calculate_technical_indicators(group):
-    """Step 4: RSI, Bollinger Bands, MACD"""
+    """ RSI, Bollinger Bands, MACD"""
     group = group.sort_values('Date').copy()
     price = group['Day Price']
     
@@ -66,7 +64,7 @@ def calculate_technical_indicators(group):
 
 
 def calculate_liquidity_features(group):
-    """Step 5: Liquidity metrics"""
+    """ Liquidity metrics"""
     group = group.sort_values('Date').copy()
     
     group['avg_volume'] = group['Volume'].rolling(window=30, min_periods=10).mean()
@@ -81,7 +79,7 @@ def calculate_liquidity_features(group):
 
 
 def calculate_momentum_features(group):
-    """Step 6: Momentum and trends"""
+    """ Momentum and trends"""
     group = group.sort_values('Date').copy()
     
     # Momentum
@@ -102,10 +100,10 @@ def calculate_momentum_features(group):
 
 
 def calculate_drawdown(group):
-    """Step 7: Drawdown analysis - FIXED VERSION"""
+    """ Drawdown analysis """
     group = group.sort_values('Date').copy()
     
-    # Calculate running max and drawdown
+    # Calculating running max and drawdown
     running_max = group['Day Price'].expanding().max()
     group['current_drawdown'] = (group['Day Price'] - running_max) / running_max
     group['max_drawdown'] = group['current_drawdown'].expanding().min()
@@ -115,7 +113,7 @@ def calculate_drawdown(group):
 
 def aggregate_stock_features(group):
     """
-    Step 8: Aggregate to one row per stock
+    Aggregating to one row per stock
     Takes all the time-series features and creates single stock profile
     """
     # Get active trading days

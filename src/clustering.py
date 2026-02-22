@@ -109,17 +109,17 @@ class StockClusterer:
         
         # Calculate silhouette score
         sil_score = silhouette_score(X_scaled, df['Cluster'])
-        print(f"\n✅ Clustering complete!")
-        print(f"📊 Silhouette Score: {sil_score:.3f}")
+        print(f"\n Clustering complete!")
+        print(f" Silhouette Score: {sil_score:.3f}")
         
         if sil_score >= 0.5:
-            print("🎉 EXCELLENT separation! (≥0.5)")
+            print("EXCELLENT separation! (≥0.5)")
         elif sil_score >= 0.4:
             print("✓ Good separation (0.4-0.5)")
         elif sil_score >= 0.3:
-            print("⚠ Moderate separation (0.3-0.4)")
+            print("Moderate separation (0.3-0.4)")
         else:
-            print("❌ Weak separation (<0.3)")
+            print("Weak separation (<0.3)")
         
         return df
     
@@ -188,7 +188,7 @@ class StockClusterer:
         with open(filepath, 'wb') as f:
             pickle.dump(model_data, f)
         
-        print(f"✅ Model saved to {filepath}")
+        print(f"Model saved to {filepath}")
     
     @classmethod
     def load_model(cls, filepath):
@@ -205,7 +205,7 @@ class StockClusterer:
         instance.scaler = model_data['scaler']
         instance.feature_columns = model_data['feature_columns']
         
-        print(f"✅ Model loaded from {filepath}")
+        print(f"Model loaded from {filepath}")
         return instance
     
     def predict(self, df):
