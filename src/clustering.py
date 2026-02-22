@@ -21,8 +21,8 @@ def find_optimal_clusters(df, feature_cols, max_clusters=8):
     """
     X = df[feature_cols].fillna(df[feature_cols].median())
     
-    # Use StandardScaler for better separation
-    scaler = StandardScaler()
+    # RobustScaler works better for financial data
+    scaler = RobustScaler()
     X_scaled = scaler.fit_transform(X)
     
     results = {'n_clusters': [], 'inertia': [], 'silhouette': []}
@@ -47,7 +47,7 @@ class StockClusterer:
     def __init__(self, n_clusters=4, random_state=42):
         self.n_clusters = n_clusters
         self.random_state = random_state
-        self.scaler = StandardScaler()  # Use StandardScaler for better separation
+        self.scaler = RobustScaler()  # Back to RobustScaler - works better
         self.model = None
         self.feature_columns = None
     

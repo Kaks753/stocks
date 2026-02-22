@@ -134,6 +134,7 @@ def aggregate_stock_features(group):
     # Volatility metrics
     features['volatility_mean'] = group['volatility_30d'].mean()
     features['volatility_max'] = group['volatility_30d'].max()
+    features['volatility_7d'] = group['volatility_7d'].mean() if 'volatility_7d' in group.columns else 0
     
     # Risk metrics
     if 'downside_deviation_30d' in group.columns:
@@ -157,11 +158,11 @@ def aggregate_stock_features(group):
     # Return consistency (coefficient of variation)
     features['return_consistency'] = features['std_return'] / (abs(features['mean_return']) + 1e-10)
     
-    # Sharpe ratio (CRITICAL) - capped to prevent extreme values
+    # Sharpe ratio - cap at reasonable range
     risk_free_rate = 0.0001
     excess_return = features['mean_return'] - risk_free_rate
     sharpe = excess_return / (features['std_return'] + 1e-10)
-    features['sharpe_ratio'] = np.clip(sharpe, -3, 3)  # Cap between -3 and 3
+    features['sharpe_ratio'] = np.clip(sharpe, -5, 5)  # Cap at -5 to 5
     
     # Technical indicators
     if 'rsi' in group.columns:
