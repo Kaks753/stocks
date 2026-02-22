@@ -21,8 +21,8 @@ def find_optimal_clusters(df, feature_cols, max_clusters=8):
     """
     X = df[feature_cols].fillna(df[feature_cols].median())
     
-    # Use RobustScaler to handle outliers better
-    scaler = RobustScaler()
+    # Use StandardScaler for better separation
+    scaler = StandardScaler()
     X_scaled = scaler.fit_transform(X)
     
     results = {'n_clusters': [], 'inertia': [], 'silhouette': []}
@@ -47,7 +47,7 @@ class StockClusterer:
     def __init__(self, n_clusters=4, random_state=42):
         self.n_clusters = n_clusters
         self.random_state = random_state
-        self.scaler = RobustScaler()  # Better for financial data with outliers
+        self.scaler = StandardScaler()  # Use StandardScaler for better separation
         self.model = None
         self.feature_columns = None
     
@@ -59,20 +59,20 @@ class StockClusterer:
         # IMPROVED FEATURE SELECTION
         # Focus on features that truly separate risk levels
         feature_cols = [
-            # Core risk measures
-            'volatility_mean', 'volatility_max', 'downside_deviation',
-            'std_return', 'var_95', 'max_drawdown',
+            # Core risk measures (most important)
+            'std_return', 'volatility_mean', 'max_drawdown',
             
             # Risk-adjusted performance
-            'sharpe_ratio', 'return_skew', 'return_kurtosis',
+            'sharpe_ratio', 'return_consistency',
             
-            # Technical/momentum
-            'rsi_mean', 'bb_width_mean', 'macd_volatility',
-            'momentum_30d', 'momentum_90d', 'trend_strength',
+            # Additional risk metrics
+            'downside_deviation', 'var_95', 'return_skew',
+            
+            # Technical/momentum (secondary)
+            'rsi_mean', 'momentum_30d',
             
             # Liquidity/trading
-            'trading_frequency', 'amihud_illiquidity', 
-            'volume_volatility', 'avg_recovery_days'
+            'trading_frequency', 'amihud_illiquidity'
         ]
         
         # Only use features that exist in dataframe

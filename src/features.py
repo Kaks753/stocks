@@ -154,10 +154,14 @@ def aggregate_stock_features(group):
     features['return_skew'] = active_days['daily_return'].skew()
     features['return_kurtosis'] = active_days['daily_return'].kurtosis()
     
-    # Sharpe ratio (CRITICAL)
+    # Return consistency (coefficient of variation)
+    features['return_consistency'] = features['std_return'] / (abs(features['mean_return']) + 1e-10)
+    
+    # Sharpe ratio (CRITICAL) - capped to prevent extreme values
     risk_free_rate = 0.0001
     excess_return = features['mean_return'] - risk_free_rate
-    features['sharpe_ratio'] = excess_return / (features['std_return'] + 1e-10)
+    sharpe = excess_return / (features['std_return'] + 1e-10)
+    features['sharpe_ratio'] = np.clip(sharpe, -3, 3)  # Cap between -3 and 3
     
     # Technical indicators
     if 'rsi' in group.columns:
