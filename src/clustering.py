@@ -56,7 +56,7 @@ class StockClusterer:
         Train clustering model and assign risk profiles.
         Returns DataFrame with Cluster and Risk_Profile columns.
         """
-        # BALANCED FEATURE SELECTION - 15 features for good separation
+        # BALANCED FEATURE SELECTION - best features for good separation
         feature_cols = [
             # Core volatility (most important)
             'std_return', 'volatility_mean', 'volatility_max',

@@ -43,7 +43,7 @@ def calculate_technical_indicators(group):
     group = group.sort_values('Date').copy()
     price = group['Day Price']
     
-    # RSI
+    # RSI - Relative Strength Index
     delta = price.diff()
     gain = (delta.where(delta > 0, 0)).rolling(window=14, min_periods=5).mean()
     loss = (-delta.where(delta < 0, 0)).rolling(window=14, min_periods=5).mean()
