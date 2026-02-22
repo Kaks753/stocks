@@ -1,9 +1,9 @@
-"""
-Stock Clustering Module
 
-This module groups stocks into risk profiles using K-Means clustering.
-The goal is to create portfolios of similar risk levels.
-"""
+# Stock Clustering Module
+
+# This module groups stocks into risk profiles using K-Means clustering.
+# The goal is to create portfolios of similar risk levels.
+
 
 import pandas as pd
 import numpy as np

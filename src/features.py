@@ -1,9 +1,8 @@
-"""
-Feature Engineering for NSE Stock Clustering
 
-This module creates financial features from stock price data to identify risk patterns.
-We calculate volatility, returns, technical indicators, and risk metrics.
-"""
+#Feature Engineering for NSE Stock Clustering 
+# This module creates financial features from stock price data to identify risk patterns.
+# We calculate volatility, returns, technical indicators, and risk metrics.
+
 
 import numpy as np
 import pandas as pd
@@ -15,6 +14,7 @@ def calculate_returns(group):
     group = group.sort_values('Date').copy()
     group['daily_return'] = group['Day Price'].pct_change()
     group['log_return'] = np.log(group['Day Price'] / group['Day Price'].shift(1))
+    
     return group
 
 
