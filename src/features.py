@@ -5,14 +5,14 @@ import pandas as pd
 
 
 def calculate_returns(group):
-    """ Daily returns"""
+    # Daily returns
     group = group.sort_values('Date').copy()
     group['daily_return'] = group['Day Price'].pct_change()
     return group
 
 
 def calculate_volatility_features(group, windows=[7, 14, 30]): 
-    """ Calculate rolling volatility"""
+    # Calculate rolling volatility
     group = group.sort_values('Date').copy()
     
     for window in windows:
@@ -24,7 +24,7 @@ def calculate_volatility_features(group, windows=[7, 14, 30]):
 
 
 def calculate_risk_metrics(group):
-    """ Risk metrics"""
+    # Risk metrics
     group = group.sort_values('Date').copy()
     
     # Downside deviation (only negative returns)
@@ -39,7 +39,7 @@ def calculate_risk_metrics(group):
 
 
 def calculate_technical_indicators(group):
-    """ RSI, Bollinger Bands, MACD"""
+    # RSI, Bollinger Bands, MACD
     group = group.sort_values('Date').copy()
     price = group['Day Price']
     
@@ -64,7 +64,7 @@ def calculate_technical_indicators(group):
 
 
 def calculate_liquidity_features(group):
-    """ Liquidity metrics"""
+    # Liquidity metrics
     group = group.sort_values('Date').copy()
     
     group['avg_volume'] = group['Volume'].rolling(window=30, min_periods=10).mean()
@@ -79,7 +79,7 @@ def calculate_liquidity_features(group):
 
 
 def calculate_momentum_features(group):
-    """ Momentum and trends"""
+    # Momentum and trends
     group = group.sort_values('Date').copy()
     
     # Momentum
@@ -100,7 +100,7 @@ def calculate_momentum_features(group):
 
 
 def calculate_drawdown(group):
-    """ Drawdown analysis """
+    # Drawdown analysis 
     group = group.sort_values('Date').copy()
     
     # Calculating running max and drawdown
@@ -112,10 +112,8 @@ def calculate_drawdown(group):
 
 
 def aggregate_stock_features(group):
-    """
-    Aggregating to one row per stock
-    Takes all the time-series features and creates single stock profile
-    """
+    # Aggregating to one row per stock
+    
     # Get active trading days
     active_days = group[(group['Volume'].notna()) & (group['Volume'] > 0)]
     

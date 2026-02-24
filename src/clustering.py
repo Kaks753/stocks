@@ -1,9 +1,7 @@
 
 # Stock Clustering Module
 
-# This module groups stocks into risk profiles using K-Means clustering.
-# The goal is to create portfolios of similar risk levels.
-
+# grouping stocks into risk profiles using K-Means clustering.
 
 import pandas as pd
 import numpy as np
@@ -15,10 +13,8 @@ import os
 
 
 def find_optimal_clusters(df, feature_cols, max_clusters=8):
-    """
-    Test different numbers of clusters to find the best fit.
-    Uses elbow method and silhouette scores.
-    """
+    # Test different numbers of clusters to find the best fit.
+    
     X = df[feature_cols].fillna(df[feature_cols].median())
     
     # RobustScaler works better for financial data
@@ -39,11 +35,7 @@ def find_optimal_clusters(df, feature_cols, max_clusters=8):
 
 
 class StockClusterer:
-    """
-    Main clustering class for NSE stocks.
-    Groups stocks by risk profile using advanced financial features.
-    """
-    
+        
     def __init__(self, n_clusters=4, random_state=42):
         self.n_clusters = n_clusters
         self.random_state = random_state
@@ -52,10 +44,8 @@ class StockClusterer:
         self.feature_columns = None
     
     def fit_predict(self, df):
-        """
-        Train clustering model and assign risk profiles.
-        Returns DataFrame with Cluster and Risk_Profile columns.
-        """
+            #    Train clustering model and assign risk profiles.
+        
         # BALANCED FEATURE SELECTION - best features for good separation
         feature_cols = [
             # Core volatility (most important)
@@ -174,7 +164,7 @@ class StockClusterer:
         return summary
     
     def save_model(self, filepath):
-        """Save trained model to disk"""
+        # Save trained model to disk
         os.makedirs(os.path.dirname(filepath), exist_ok=True)
         
         model_data = {
@@ -209,7 +199,7 @@ class StockClusterer:
         return instance
     
     def predict(self, df):
-        """Predict clusters for new data"""
+        # Predict clusters for new data
         if self.model is None:
             raise ValueError("Model not trained! Call fit_predict() first.")
         
