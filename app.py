@@ -268,7 +268,7 @@ else:
         (df_clustered['volatility_mean'].between(vol_min, vol_max))
     ]
 
-# Summary stats in a nice card at the bottom
+# Summary stats in a card at the bottom
 st.sidebar.markdown("---")
 with st.sidebar.container():
     st.markdown("""
@@ -407,3 +407,28 @@ with tab1:
         }
     )
 
+# Tab2: STOCK ANALYSIS
+with tab2:
+    st.header("📈 Stock Analysis")
+    
+    # Stock selection
+    stock_options = filtered_df['Stock_code'].unique()
+    selected_stock = st.selectbox(
+        "Select a stock to analyze:",
+        options=stock_options,
+        index=0
+    )
+    
+    # Get stock details
+    stock_details = filtered_df[filtered_df['Stock_code'] == selected_stock].iloc[0]
+    
+    # Display stock info
+    st.subheader(f"📊 {stock_details['Name']} ({stock_details['Stock_code']})")
+    st.markdown(f"**Sector:** {stock_details['Sector']}")
+    st.markdown(f"**Risk Profile:** {stock_details['Risk_Profile']}")
+    
+with tab6:
+    st.header("Group 3")
+    st.markdown("""
+    This project was developed by **Group 3** as part of the Data Science Bootcamp at Moringa School.
+    """)

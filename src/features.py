@@ -11,7 +11,7 @@ def calculate_returns(group):
     return group
 
 
-def calculate_volatility_features(group, windows=[7, 14, 30]): 
+def calculate_volatility_features(group, windows=[5, 10, 20]): 
     # Calculate rolling volatility
     group = group.sort_values('Date').copy()
     
@@ -30,10 +30,10 @@ def calculate_risk_metrics(group):
     # Downside deviation (only negative returns)
     negative_returns = group['daily_return'].copy()
     negative_returns[negative_returns > 0] = 0
-    group['downside_deviation_30d'] = negative_returns.rolling(window=30, min_periods=10).std()
+    group['downside_deviation_20d'] = negative_returns.rolling(window=20, min_periods=10).std()
     
     # Value at Risk (5th percentile)
-    group['var_95'] = group['daily_return'].rolling(window=60, min_periods=20).quantile(0.05)
+    group['var_95'] = group['daily_return'].rolling(window=40, min_periods=20).quantile(0.05)
     
     return group
 
@@ -45,8 +45,8 @@ def calculate_technical_indicators(group):
     
     # RSI - Relative Strength Index
     delta = price.diff()
-    gain = (delta.where(delta > 0, 0)).rolling(window=14, min_periods=5).mean()
-    loss = (-delta.where(delta < 0, 0)).rolling(window=14, min_periods=5).mean()
+    gain = (delta.where(delta > 0, 0)).rolling(window=10, min_periods=5).mean()
+    loss = (-delta.where(delta < 0, 0)).rolling(window=10, min_periods=5).mean()
     rs = gain / (loss + 1e-10)
     group['rsi'] = 100 - (100 / (1 + rs))
     
@@ -67,8 +67,8 @@ def calculate_liquidity_features(group):
     # Liquidity metrics
     group = group.sort_values('Date').copy()
     
-    group['avg_volume'] = group['Volume'].rolling(window=30, min_periods=10).mean()
-    group['volume_volatility'] = group['Volume'].rolling(window=30, min_periods=10).std()
+    group['avg_volume'] = group['Volume'].rolling(window=20, min_periods=10).mean()
+    group['volume_volatility'] = group['Volume'].rolling(window=20, min_periods=10).std()
     
     # Amihud illiquidity
     group['amihud_illiquidity'] = np.abs(group['daily_return']) / (
@@ -83,18 +83,18 @@ def calculate_momentum_features(group):
     group = group.sort_values('Date').copy()
     
     # Momentum
-    group['momentum_7d'] = group['Day Price'].pct_change(periods=7)
-    group['momentum_30d'] = group['Day Price'].pct_change(periods=30)
-    group['momentum_90d'] = group['Day Price'].pct_change(periods=90)
+    group['momentum_5d'] = group['Day Price'].pct_change(periods=5)
+    group['momentum_20d'] = group['Day Price'].pct_change(periods=20)
+    group['momentum_60d'] = group['Day Price'].pct_change(periods=60)
     
     # Moving averages
-    group['ma_7'] = group['Day Price'].rolling(window=7, min_periods=3).mean()
-    group['ma_30'] = group['Day Price'].rolling(window=30, min_periods=10).mean()
-    group['ma_50'] = group['Day Price'].rolling(window=50, min_periods=20).mean()
+    group['ma_5'] = group['Day Price'].rolling(window=5, min_periods=3).mean()
+    group['ma_20'] = group['Day Price'].rolling(window=20, min_periods=10).mean()
+    group['ma_60'] = group['Day Price'].rolling(window=60, min_periods=30).mean()
     
     # Price to MA ratio
-    group['price_to_ma30'] = (group['Day Price'] - group['ma_30']) / (group['ma_30'] + 1e-10)
-    group['price_to_ma50'] = (group['Day Price'] - group['ma_50']) / (group['ma_50'] + 1e-10)
+    group['price_to_ma20'] = (group['Day Price'] - group['ma_20']) / (group['ma_20'] + 1e-10)
+    group['price_to_ma60'] = (group['Day Price'] - group['ma_60']) / (group['ma_60'] + 1e-10)
     
     return group
 
@@ -128,13 +128,13 @@ def aggregate_stock_features(group):
     }
     
     # Volatility metrics
-    features['volatility_mean'] = group['volatility_30d'].mean()
-    features['volatility_max'] = group['volatility_30d'].max()
-    features['volatility_7d'] = group['volatility_7d'].mean() if 'volatility_7d' in group.columns else 0
+    features['volatility_mean'] = group['volatility_20d'].mean()
+    features['volatility_max'] = group['volatility_20d'].max()
+    features['volatility_5d'] = group['volatility_5d'].mean() if 'volatility_5d' in group.columns else 0
     
     # Risk metrics
-    if 'downside_deviation_30d' in group.columns:
-        features['downside_deviation'] = group['downside_deviation_30d'].mean()
+    if 'downside_deviation_20d' in group.columns:
+        features['downside_deviation'] = group['downside_deviation_20d'].mean()
     else:
         features['downside_deviation'] = 0
     
@@ -154,7 +154,7 @@ def aggregate_stock_features(group):
     # Return consistency (coefficient of variation)
     features['return_consistency'] = features['std_return'] / (abs(features['mean_return']) + 1e-10)
     
-    # Sharpe ratio - cap at reasonable range
+    # Sharpe ratio
     risk_free_rate = 0.0001
     excess_return = features['mean_return'] - risk_free_rate
     sharpe = excess_return / (features['std_return'] + 1e-10)
@@ -188,18 +188,18 @@ def aggregate_stock_features(group):
     features['trading_frequency'] = len(active_days) / len(group)
     
     # Momentum
-    if 'momentum_30d' in group.columns:
-        features['momentum_30d'] = group['momentum_30d'].iloc[-1]
+    if 'momentum_20d' in group.columns:
+        features['momentum_20d'] = group['momentum_20d'].iloc[-1]
     else:
-        features['momentum_30d'] = 0
+        features['momentum_20d'] = 0
     
-    if 'momentum_90d' in group.columns:
-        features['momentum_90d'] = group['momentum_90d'].iloc[-1]
+    if 'momentum_60d' in group.columns:
+        features['momentum_60d'] = group['momentum_60d'].iloc[-1]
     else:
-        features['momentum_90d'] = 0
+        features['momentum_60d'] = 0
     
-    if 'price_to_ma50' in group.columns:
-        features['trend_strength'] = group['price_to_ma50'].iloc[-1]
+    if 'price_to_ma60' in group.columns:
+        features['trend_strength'] = group['price_to_ma60'].iloc[-1]
     else:
         features['trend_strength'] = 0
     
