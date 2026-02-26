@@ -1,6 +1,3 @@
-echo "build-essential
-python3-dev" > packages.txt
-
-git add packages.txt
-git commit -m "Add system dependencies"
-git push origin main
+build-essential
+python3-dev
+python3-pip
